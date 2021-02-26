@@ -1,8 +1,25 @@
 #pragma once
 #include "BetterWin.h"
+#include "DXEException.h"
 
 class Window
 {
+public:
+	class Exception : public DXEException
+	{
+	public:
+		Exception(int line, const char* file, HRESULT hr) noexcept;
+		const char* what() const noexcept override;
+		static std::string TranslateErrorCode(HRESULT hr) noexcept;
+
+		virtual const char* GetType() const noexcept;
+		HRESULT GetErrorCode() const noexcept;
+		std::string GetErrorString() const noexcept;
+
+	private:
+		HRESULT hr;
+	};
+
 private:
 	// Singleton manages registration/cleanup of the Window class
 	class WindowClass
@@ -22,7 +39,7 @@ private:
 	};
 
 public:
-	Window(int width, int height, const char* name) noexcept;
+	Window(int width, int height, const char* name);
 	~Window();
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
@@ -37,3 +54,8 @@ private:
 	int height;
 	HWND hWnd;
 };
+
+
+// error exception helpers
+#define WND_EXCEPT(hr) Window::Exception(__LINE__, __FILE__, hr);
+#define WND_LAST_EXCEPT() Window::Exception(__LINE__, __FILE__, GetLastError());
