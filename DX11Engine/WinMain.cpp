@@ -11,14 +11,14 @@ int CALLBACK WinMain(
 		Window wnd(1280, 720, "DX11Engine");
 
 		MSG msg;
-		BOOL gResult;
-		while ((gResult = GetMessage(&msg, nullptr, 0, 0)) > 0)
+		BOOL bGResult;
+		while ((bGResult = GetMessage(&msg, nullptr, 0, 0)) > 0)
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
 
-		if (gResult == -1) return -1;
+		if (bGResult == -1) return -1;
 
 		return msg.wParam;
 	}

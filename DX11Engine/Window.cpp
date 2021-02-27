@@ -115,6 +115,27 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_CLOSE:
 		PostQuitMessage(0);
 		return 0;
+
+	// Clear keystate when window isn't focused anymore to prevent input getting stuck
+	case WM_KILLFOCUS:
+		kbd.ClearState();
+		break;
+
+	// Keyboard messages
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+		if (!(lParam & 0x40000000) || kbd.AutoRepeatIsEnabled()) // Filter repeated keydown messages
+		{
+			kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
+		}
+		break;
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
+		break;
+	case WM_CHAR:
+		kbd.OnChar(static_cast<unsigned char>(wParam));
+		break;
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
@@ -152,7 +173,7 @@ std::string Window::Exception::TranslateErrorCode(HRESULT hr) noexcept
 		reinterpret_cast<LPSTR>(&pMsgBuf), 0, nullptr
 	);
 
-	// 0 string length returned indicates a failure
+	// String length of 0 indicates a failure
 	if (nMsgLen == 0)
 	{
 		return "Unidentified error code";
