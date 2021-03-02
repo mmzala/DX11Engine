@@ -1,4 +1,4 @@
-#include "Window.h"
+#include "App.h"
 
 int CALLBACK WinMain(
 	HINSTANCE hInstance,
@@ -8,19 +8,7 @@ int CALLBACK WinMain(
 {
 	try
 	{
-		Window wnd(1280, 720, "DX11Engine");
-
-		MSG msg;
-		BOOL bGResult;
-		while ((bGResult = GetMessage(&msg, nullptr, 0, 0)) > 0)
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-
-		if (bGResult == -1) return -1;
-
-		return msg.wParam;
+		return App{}.Start();
 	}
 	catch (const DXEException& e)
 	{

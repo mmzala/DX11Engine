@@ -80,7 +80,7 @@ Window::~Window()
 	DestroyWindow(hWnd);
 }
 
-/* Used for testing
+// Used for testing
 void Window::SetTitle(const std::string& title)
 {
 	if (SetWindowText(hWnd, title.c_str()) == 0)
@@ -88,7 +88,28 @@ void Window::SetTitle(const std::string& title)
 		throw WND_LAST_EXCEPT();
 	}
 }
-*/
+
+std::optional<int> Window::ProcessMessages()
+{
+	MSG msg;
+
+	// While queue has messages, remove and dispatch them
+	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	{
+		// Check for WM_QUIT because PeekMessage() does not signal this via return
+		if (msg.message == WM_QUIT)
+		{
+			return msg.wParam;
+		}
+
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	// Return empty optional when not quitting app
+	return {};
+}
+
 
 LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
