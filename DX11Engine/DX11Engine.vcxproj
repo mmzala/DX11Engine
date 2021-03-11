@@ -145,7 +145,10 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="DXEException.cpp" />
+    <ClCompile Include="DXErr.cpp" />
+    <ClCompile Include="DxgiInfoManager.cpp" />
     <ClCompile Include="EngineTimer.cpp" />
+    <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -155,7 +158,10 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="BetterWin.h" />
     <ClInclude Include="DXEException.h" />
+    <ClInclude Include="DXErr.h" />
+    <ClInclude Include="DxgiInfoManager.h" />
     <ClInclude Include="EngineTimer.h" />
+    <ClInclude Include="Graphics.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="resource.h" />
