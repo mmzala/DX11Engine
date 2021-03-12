@@ -2,6 +2,8 @@
 #include "DXErr.h"
 #include <sstream>
 
+namespace wrl = Microsoft::WRL;
+
 #pragma comment(lib, "d3d11.lib")
 
 // Graphics exception macros
@@ -62,37 +64,13 @@ Graphics::Graphics(HWND hWnd)
 	));
 
 	// Gain access to texture subresource in swap chain (back buffer)
-	ID3D11Resource* pBackBuffer = nullptr;
-	GFX_THROW_INFO(pSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&pBackBuffer)));
+	wrl::ComPtr<ID3D11Resource> pBackBuffer;
+	GFX_THROW_INFO(pSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer));
 	GFX_THROW_INFO(pDevice->CreateRenderTargetView(
-		pBackBuffer,
+		pBackBuffer.Get(),
 		nullptr,
 		&pRenderTarget
 	));
-	pBackBuffer->Release();
-}
-
-Graphics::~Graphics()
-{
-	if (pRenderTarget != nullptr)
-	{
-		pRenderTarget->Release();
-	}
-
-	if (pDeviceContext != nullptr)
-	{
-		pDeviceContext->Release();
-	}
-
-	if (pSwapChain != nullptr)
-	{
-		pSwapChain->Release();
-	}
-
-	if (pDevice != nullptr)
-	{
-		pDevice->Release();
-	}
 }
 
 void Graphics::EndFrame()
@@ -119,7 +97,7 @@ void Graphics::EndFrame()
 void Graphics::ClearBuffer(float red, float green, float blue) noexcept
 {
 	const float color[] = { red, green, blue, 1.0f };
-	pDeviceContext->ClearRenderTargetView(pRenderTarget, color);
+	pDeviceContext->ClearRenderTargetView(pRenderTarget.Get(), color);
 }
 
 
